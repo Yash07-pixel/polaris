@@ -265,29 +265,6 @@ Example molecule response:
   "is_filtered": false
 }
 ```
-
----
-
-## Screenshots
-
-### Hero UI
-
-![Hero UI](./docs/screenshots/hero.png)
-
-### Molecule Cards
-
-![Molecule Cards](./docs/screenshots/molecule-cards.png)
-
-### Report Generation
-
-![Report Generation](./docs/screenshots/report-generation.png)
-
-### PDF Preview
-
-![PDF Preview](./docs/screenshots/pdf-preview.png)
-
----
-
 ## Testing
 
 Run the test suite:
