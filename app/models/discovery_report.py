@@ -9,7 +9,7 @@ from app.database import Base
 
 
 class DiscoveryReport(Base):
-    """A simulated report generated from a discovery session."""
+    """A research-style report generated from a discovery session."""
 
     __tablename__ = "discovery_reports"
 

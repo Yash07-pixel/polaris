@@ -6,7 +6,7 @@ from pydantic import BaseModel, Field
 
 
 class ReportGenerateRequest(BaseModel):
-    """Request body for generating a simulated research report."""
+    """Request body for generating a research-style report."""
 
     session_id: int = Field(..., ge=1)
 

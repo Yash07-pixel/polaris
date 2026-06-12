@@ -1,4 +1,4 @@
-"""Traffic-light ADMET visualization helpers for simulated molecule data."""
+"""Traffic-light ADMET visualization helpers for curated molecule data."""
 
 from dataclasses import dataclass
 from typing import Literal
@@ -19,7 +19,7 @@ class ADMETMetric:
 
 
 class ADMETPredictor:
-    """Create mock traffic-light ADMET summaries from pre-seeded values."""
+    """Create traffic-light ADMET-style summaries from curated pre-seeded values."""
 
     def evaluate(self, molecule: Molecule) -> list[ADMETMetric]:
         """Return traffic-light ADMET metrics for a molecule."""
@@ -29,13 +29,13 @@ class ADMETPredictor:
                 label="Lipinski",
                 value="Pass" if self.passes_lipinski(molecule) else "Fail",
                 status="Green" if self.passes_lipinski(molecule) else "Red",
-                detail="Rule-of-five screen using seeded molecular properties.",
+                detail="Rule-of-five screen using curated molecular properties.",
             ),
             ADMETMetric(
                 label="Solubility",
                 value=molecule.solubility_log_s,
                 status=self._solubility_status(molecule.solubility_log_s),
-                detail="Simulated logS; less negative values are treated as more soluble.",
+                detail="Prototype logS estimate; less negative values are treated as more soluble.",
             ),
             ADMETMetric(
                 label="hERG Risk",
@@ -59,13 +59,13 @@ class ADMETPredictor:
                 label="Bioavailability",
                 value=molecule.bioavailability_score,
                 status=self._bioavailability_status(molecule.bioavailability_score),
-                detail="Simulated oral bioavailability score.",
+                detail="Prototype oral bioavailability score.",
             ),
             ADMETMetric(
                 label="Clearance",
                 value=molecule.clearance_ml_min_kg,
                 status=self._clearance_status(molecule.clearance_ml_min_kg),
-                detail="Simulated clearance in mL/min/kg.",
+                detail="Prototype clearance estimate in mL/min/kg.",
             ),
         ]
 
@@ -80,13 +80,13 @@ class ADMETPredictor:
         )
 
     def is_problematic(self, molecule: Molecule) -> bool:
-        """Return whether seeded safety or drug-likeness signals are problematic."""
+        """Return whether curated safety or drug-likeness signals are problematic."""
 
         return molecule.is_toxic or not self.passes_lipinski(molecule)
 
     @staticmethod
     def _risk_status(risk: str) -> TrafficLight:
-        """Map low/medium/high seeded risk values to traffic lights."""
+        """Map low/medium/high curated risk values to traffic lights."""
 
         normalized = risk.lower()
         if normalized == "low":
@@ -97,7 +97,7 @@ class ADMETPredictor:
 
     @staticmethod
     def _solubility_status(log_s: float) -> TrafficLight:
-        """Map simulated solubility values to traffic lights."""
+        """Map prototype solubility values to traffic lights."""
 
         if log_s >= -3.5:
             return "Green"
@@ -107,7 +107,7 @@ class ADMETPredictor:
 
     @staticmethod
     def _bioavailability_status(score: float) -> TrafficLight:
-        """Map simulated bioavailability scores to traffic lights."""
+        """Map prototype bioavailability scores to traffic lights."""
 
         if score >= 0.55:
             return "Green"
@@ -117,7 +117,7 @@ class ADMETPredictor:
 
     @staticmethod
     def _clearance_status(clearance: float) -> TrafficLight:
-        """Map simulated clearance values to traffic lights."""
+        """Map prototype clearance estimates to traffic lights."""
 
         if clearance <= 10:
             return "Green"

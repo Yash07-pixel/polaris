@@ -62,8 +62,8 @@
   function renderTarget(session, molecules) {
     const card = document.getElementById("target-card");
     const meta = targetMeta[session.identified_target_name] || {
-      gene: "Mock",
-      disease: "Demo target",
+      gene: "Target",
+      disease: "Curated benchmark target",
       area: "Prototype",
     };
     const confidence = Math.round((session.confidence_score || 0) * 100);
@@ -183,35 +183,41 @@
             <span class="badge">Rank ${molecule.rank ?? "n/a"}</span>
             <span class="badge">QED ${fmt(molecule.qed_score, 3)}</span>
           </div>
-          <table class="property-table">
-            <tbody>
-              <tr><td>Docking score</td><td>${fmt(molecule.docking_score, 1)} kcal/mol</td></tr>
-              <tr><td>Molecular weight</td><td>${fmt(molecule.molecular_weight, 1)}</td></tr>
-              <tr><td>LogP</td><td>${fmt(molecule.logp, 1)}</td></tr>
-              <tr><td>H-bond donors</td><td>${molecule.h_bond_donors}</td></tr>
-              <tr><td>H-bond acceptors</td><td>${molecule.h_bond_acceptors}</td></tr>
-              <tr><td>Rotatable bonds</td><td>${molecule.rotatable_bonds}</td></tr>
-              <tr><td>Filter reason</td><td>${escapeHtml(molecule.filter_reason || "None")}</td></tr>
-            </tbody>
-          </table>
-          <h3>ADMET</h3>
-          <table class="admet-table">
-            <thead><tr><th>Metric</th><th>Value</th><th>Signal</th></tr></thead>
-            <tbody>
-              ${molecule.admet.map((metric) => `<tr><td>${escapeHtml(metric.label)}</td><td>${escapeHtml(metric.value)}</td><td>${escapeHtml(metric.status)}</td></tr>`).join("")}
-            </tbody>
-          </table>
-          ${docking ? `
-            <h3>Docking interactions</h3>
+          <div class="table-shell">
             <table class="property-table">
               <tbody>
-                <tr><td>Binding pocket</td><td>${escapeHtml(docking.binding_pocket)}</td></tr>
-                <tr><td>Key residues</td><td>${escapeHtml(docking.key_residues.join(", "))}</td></tr>
-                <tr><td>Interactions</td><td>${escapeHtml(docking.interaction_types.join(", "))}</td></tr>
-                <tr><td>Affinity</td><td>${escapeHtml(docking.affinity)}</td></tr>
-                <tr><td>RMSD</td><td>${fmt(docking.rmsd, 2)}</td></tr>
+                <tr><td>Docking score</td><td>${fmt(molecule.docking_score, 1)} kcal/mol</td></tr>
+                <tr><td>Molecular weight</td><td>${fmt(molecule.molecular_weight, 1)}</td></tr>
+                <tr><td>LogP</td><td>${fmt(molecule.logp, 1)}</td></tr>
+                <tr><td>H-bond donors</td><td>${molecule.h_bond_donors}</td></tr>
+                <tr><td>H-bond acceptors</td><td>${molecule.h_bond_acceptors}</td></tr>
+                <tr><td>Rotatable bonds</td><td>${molecule.rotatable_bonds}</td></tr>
+                <tr><td>Filter reason</td><td>${escapeHtml(molecule.filter_reason || "None")}</td></tr>
               </tbody>
             </table>
+          </div>
+          <h3>ADMET</h3>
+          <div class="table-shell">
+            <table class="admet-table">
+              <thead><tr><th>Metric</th><th>Value</th><th>Signal</th></tr></thead>
+              <tbody>
+                ${molecule.admet.map((metric) => `<tr><td>${escapeHtml(metric.label)}</td><td>${escapeHtml(metric.value)}</td><td>${escapeHtml(metric.status)}</td></tr>`).join("")}
+              </tbody>
+            </table>
+          </div>
+          ${docking ? `
+            <h3>Docking interactions</h3>
+            <div class="table-shell">
+              <table class="property-table">
+                <tbody>
+                  <tr><td>Binding pocket</td><td>${escapeHtml(docking.binding_pocket)}</td></tr>
+                  <tr><td>Key residues</td><td>${escapeHtml(docking.key_residues.join(", "))}</td></tr>
+                  <tr><td>Interactions</td><td>${escapeHtml(docking.interaction_types.join(", "))}</td></tr>
+                  <tr><td>Affinity</td><td>${escapeHtml(docking.affinity)}</td></tr>
+                  <tr><td>RMSD</td><td>${fmt(docking.rmsd, 2)}</td></tr>
+                </tbody>
+              </table>
+            </div>
           ` : `<p class="muted">Detailed docking interaction fields are shown for rank 1 molecules.</p>`}
         </div>
       </div>

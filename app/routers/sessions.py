@@ -89,7 +89,7 @@ def _build_session_name(query: str) -> str:
 
 
 def _count_molecules(db: Session, target_id: int) -> int:
-    """Count all mock molecules associated with a target."""
+    """Count all curated molecules associated with a target."""
 
     return int(db.scalar(select(func.count()).select_from(Molecule).where(Molecule.target_id == target_id)) or 0)
 
@@ -108,11 +108,11 @@ def _count_passed_filter(db: Session, target_id: int) -> int:
 
 
 def _target_name_for_key(target_key: str) -> str:
-    """Resolve a mock target key to the seeded database target name."""
+    """Resolve a curated target key to the seeded database target name."""
 
-    from app.mock_data.targets import MOCK_TARGETS
+    from app.curated_data.targets import CURATED_TARGETS
 
-    for target in MOCK_TARGETS:
+    for target in CURATED_TARGETS:
         if target["key"] == target_key:
             return target["name"]
     raise ValueError(f"Unknown target key: {target_key}")

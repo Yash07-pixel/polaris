@@ -9,7 +9,7 @@ from app.database import Base
 
 
 class DrugTarget(Base):
-    """A simulated therapeutic target used for prototype discovery workflows."""
+    """A curated therapeutic target used for prototype discovery workflows."""
 
     __tablename__ = "drug_targets"
 

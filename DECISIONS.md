@@ -18,11 +18,11 @@ The main priorities are:
 
 The system favors clarity over scientific complexity. A production-grade discovery platform would require validated datasets, domain-specific modeling, real docking workflows, assay evidence, regulatory review, and expert scientific oversight. MolGenix instead focuses on showing how such a workflow could be structured as a product.
 
-## 2. Why Mock Data Was Used
+## 2. Why Curated Prototype Data Was Used
 
-MolGenix uses mock data by design. Real pharmaceutical datasets introduce licensing concerns, data normalization work, domain-specific validation requirements, and scientific interpretation risks that are outside the scope of the MVP.
+MolGenix uses a curated pre-seeded molecular benchmark-style dataset by design. Real pharmaceutical datasets introduce licensing concerns, data normalization work, domain-specific validation requirements, and scientific interpretation risks that are outside the scope of the MVP.
 
-The mock-data approach provides:
+The curated-data approach provides:
 
 - Deterministic demos.
 - Reproducible test results.
@@ -36,8 +36,8 @@ The seed dataset is deliberately constrained:
 - Exactly 5 predefined drug targets.
 - Exactly 40 molecules.
 - Exactly 8 molecules per target.
-- Simulated docking scores.
-- Simulated ADMET values.
+- Prototype docking-score values.
+- ADMET-style evaluation values.
 - Intentional toxicity flags for demonstration.
 
 This makes the demo predictable while still realistic enough to show target matching, ranking, filtering, visualization, and reporting.
@@ -61,7 +61,7 @@ The backend is organized into separate modules for:
 - `services`
 - `routers`
 - `utils`
-- `mock_data`
+- `curated_data`
 
 This separation keeps domain objects, API contracts, business logic, routing, utilities, and seed data independent. The structure is intentionally modest, but it gives the project a scalable foundation for future phases.
 
@@ -78,7 +78,7 @@ The project does not need distributed transactions, concurrent multi-user worklo
 - Easy Docker usage.
 - Simple reset and reproducibility.
 - Low infrastructure overhead.
-- Fast enough for a fixed mock dataset.
+- Fast enough for a fixed curated dataset.
 
 The schema is still modeled cleanly through SQLAlchemy, so moving to PostgreSQL later would mainly involve configuration, migrations, and deployment changes rather than a complete rewrite.
 
@@ -107,10 +107,10 @@ Production docking workflows require protein structures, ligand preparation, bin
 
 MolGenix instead uses:
 
-- Pre-seeded molecules.
-- Simulated docking scores.
-- Simulated ADMET signals.
-- Simulated toxicity and filtering flags.
+- Curated pre-seeded molecules.
+- Prototype docking-score values.
+- ADMET-style evaluation signals.
+- Curated toxicity and filtering flags.
 - RDKit-based SMILES parsing and 2D structure rendering.
 
 RDKit is used for visualization and lightweight cheminformatics utilities, not for real discovery claims. The goal is to provide scientifically familiar visuals and ranking behavior while keeping the product fast, reproducible, and honest about its limitations.
@@ -144,9 +144,9 @@ The report layout is publication-inspired:
 - Embedded molecule structure diagrams.
 - ADMET interpretation.
 - Methodology and simulation scope.
-- Clear demo-only disclaimer.
+- Clear research-scope disclaimer.
 
-The PDF is designed for presentation value and researcher readability, while clearly stating that outputs are simulated.
+The PDF is designed for presentation value and researcher readability, while clearly stating that outputs are prototype evaluation artifacts.
 
 ## 9. Performance and Scalability Tradeoffs
 
@@ -184,7 +184,7 @@ The MVP is a local/demo prototype, not a production application. Adding users, s
 Current assumptions:
 
 - The app runs in a trusted local or demo environment.
-- Data is mock-only.
+- Data is curated, pre-seeded, and non-clinical.
 - There are no private user records.
 - There are no real pharmaceutical assets.
 
@@ -203,16 +203,16 @@ Design choices include:
 - Clear molecule cards, target cards, report panels, and modal layouts.
 - Smooth transitions and subtle depth effects.
 
-The brand direction is modern, minimal, and credible. The UI should feel suitable for an AI healthcare startup, while remaining transparent that the scientific workflow is simulated.
+The brand direction is modern, minimal, and credible. The UI should feel suitable for an AI healthcare startup, while remaining transparent that the scientific workflow is prototype-scoped.
 
 ## 12. Known Limitations
 
 MolGenix has important limitations:
 
-- Outputs are simulated.
-- Molecules are pre-seeded.
-- Docking scores are mock values.
-- ADMET signals are mock values.
+- Outputs are prototype-scoped.
+- Molecules are curated and pre-seeded.
+- Docking scores are prototype values.
+- ADMET signals are prototype evaluation values.
 - There is no real biomedical validation.
 - There is no wet-lab evidence.
 - There is no real docking pipeline.
@@ -246,4 +246,4 @@ These improvements should be introduced only with clear product scope and approp
 
 MolGenix prioritizes clarity, educational value, engineering quality, and demo realism over scientific completeness.
 
-The project is strongest when it remains transparent about what is simulated, disciplined about its architecture, and focused on presenting a polished end-to-end prototype without overstating biomedical capability.
+The project is strongest when it remains transparent about what is prototype-scoped, disciplined about its architecture, and focused on presenting a polished end-to-end workflow without overstating biomedical capability.

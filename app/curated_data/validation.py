@@ -1,29 +1,29 @@
-"""Validation helpers for simulated MolGenix seed data."""
+"""Validation helpers for curated MolGenix seed data."""
 
 from collections import Counter
 
 from rdkit import Chem
 
-from app.mock_data.molecules import MOCK_MOLECULES
-from app.mock_data.targets import MOCK_TARGETS
+from app.curated_data.molecules import CURATED_MOLECULES
+from app.curated_data.targets import CURATED_TARGETS
 
 EXPECTED_TARGET_COUNT = 5
 EXPECTED_MOLECULES_PER_TARGET = 8
 EXPECTED_MOLECULE_COUNT = EXPECTED_TARGET_COUNT * EXPECTED_MOLECULES_PER_TARGET
 
 
-def validate_mock_data() -> None:
+def validate_curated_data() -> None:
     """Validate strict prototype data requirements before database seeding."""
 
-    target_keys = [target["key"] for target in MOCK_TARGETS]
-    if len(MOCK_TARGETS) != EXPECTED_TARGET_COUNT:
-        raise ValueError(f"Expected {EXPECTED_TARGET_COUNT} targets, found {len(MOCK_TARGETS)}.")
+    target_keys = [target["key"] for target in CURATED_TARGETS]
+    if len(CURATED_TARGETS) != EXPECTED_TARGET_COUNT:
+        raise ValueError(f"Expected {EXPECTED_TARGET_COUNT} targets, found {len(CURATED_TARGETS)}.")
     if len(set(target_keys)) != EXPECTED_TARGET_COUNT:
-        raise ValueError("Mock target keys must be unique.")
-    if len(MOCK_MOLECULES) != EXPECTED_MOLECULE_COUNT:
-        raise ValueError(f"Expected {EXPECTED_MOLECULE_COUNT} molecules, found {len(MOCK_MOLECULES)}.")
+        raise ValueError("Curated target keys must be unique.")
+    if len(CURATED_MOLECULES) != EXPECTED_MOLECULE_COUNT:
+        raise ValueError(f"Expected {EXPECTED_MOLECULE_COUNT} molecules, found {len(CURATED_MOLECULES)}.")
 
-    counts = Counter(str(molecule["target_key"]) for molecule in MOCK_MOLECULES)
+    counts = Counter(str(molecule["target_key"]) for molecule in CURATED_MOLECULES)
     for target_key in target_keys:
         if counts[target_key] != EXPECTED_MOLECULES_PER_TARGET:
             raise ValueError(
@@ -36,7 +36,7 @@ def validate_mock_data() -> None:
         raise ValueError(f"Molecules reference unknown target keys: {sorted(unknown_targets)}.")
 
     toxic_by_target: Counter[str] = Counter()
-    for molecule in MOCK_MOLECULES:
+    for molecule in CURATED_MOLECULES:
         if float(molecule["docking_score"]) >= 0:
             raise ValueError(f"{molecule['name']} has a non-negative docking score.")
         smiles = str(molecule["smiles"]).strip()

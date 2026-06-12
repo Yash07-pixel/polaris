@@ -1,1 +1,1 @@
-"""Mock ML helpers for MolGenix."""
+"""Prototype molecular evaluation helpers for MolGenix."""

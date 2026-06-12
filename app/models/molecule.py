@@ -9,7 +9,7 @@ from app.database import Base
 
 
 class Molecule(Base):
-    """A simulated candidate molecule with computed prototype properties."""
+    """A curated candidate molecule with computed prototype properties."""
 
     __tablename__ = "molecules"
 

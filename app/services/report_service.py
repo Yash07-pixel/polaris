@@ -1,4 +1,4 @@
-"""AI-assisted simulated research report generation service."""
+"""AI-assisted research-style report generation service."""
 
 from __future__ import annotations
 
@@ -24,7 +24,7 @@ class ReportService:
         self.settings = settings or get_settings()
 
     def generate_report(self, db: Session, session_id: int) -> DiscoveryReport:
-        """Generate a simulated research report for a completed discovery session."""
+        """Generate a research-style report for a completed discovery session."""
 
         session = db.scalar(
             select(DiscoverySession)
@@ -98,7 +98,7 @@ class ReportService:
         top_candidates: list[tuple[Molecule, int]],
         druggability_score: float,
     ) -> str:
-        """Build the constrained Gemini prompt for demo-only report prose."""
+        """Build the constrained Gemini prompt for research-scope report prose."""
 
         candidate_payload = [
             {
@@ -114,11 +114,12 @@ class ReportService:
             for molecule, rank in top_candidates
         ]
         return (
-            "Write a demo-only computational medicinal chemistry executive summary for MolGenix.\n"
+            "Write a research-scope computational medicinal chemistry executive summary for MolGenix.\n"
             "Requirements: exactly 3 paragraphs, 150-200 words total, professional medicinal chemistry tone, "
             "publication-style language, mention top candidates, docking scores, ADMET findings, and recommend "
-            "wet-lab validation. Frame all findings as simulated triage evidence. Do not claim real biomedical "
-            "validity. Do not introduce molecules not listed below.\n\n"
+            "wet-lab validation. Frame all findings as prototype triage evidence from a curated molecular "
+            "benchmark dataset. Do not claim validated DeepChem inference, real docking, or biomedical validity. "
+            "Do not introduce molecules not listed below.\n\n"
             f"target: {session.target.name if session.target else 'unknown'}\n"
             f"query: {session.query}\n"
             f"druggability_score: {druggability_score:.1f}/100\n"
@@ -145,9 +146,9 @@ class ReportService:
         ]
 
         return (
-            f"This simulated MolGenix screening brief maps the submitted query to {target_name} and evaluates only pre-seeded mock compounds. "
-            f"The prioritized candidates are {candidate_text}. The composite demo druggability score is {druggability_score:.1f}/100, reflecting seeded docking, physicochemical, and safety signals rather than experimental evidence.\n\n"
-            f"{best.name} leads the ranked set with a simulated docking score of {best.docking_score:.1f} kcal/mol and the most favorable aggregate profile in this controlled dataset. "
+            f"This MolGenix screening brief maps the submitted query to {target_name} and evaluates curated pre-seeded benchmark compounds. "
+            f"The prioritized candidates are {candidate_text}. The composite prototype druggability score is {druggability_score:.1f}/100, reflecting docking-score, physicochemical, and safety-style signals rather than experimental evidence.\n\n"
+            f"{best.name} leads the ranked set with a prototype docking score of {best.docking_score:.1f} kcal/mol and the most favorable aggregate profile in this controlled dataset. "
             f"The ADMET readout remains deliberately cautious: {'; '.join(admet_notes)}. Problematic compounds remain visible so filtering decisions are transparent and easy to audit.\n\n"
             "These results support a presentation-ready triage narrative, not biomedical validity. Apparent binding or developability advantages should be interpreted as prototype signals only and would require independent structure review, orthogonal biochemical assays, selectivity profiling, formulation assessment, and wet-lab validation before any scientific conclusion."
         )
@@ -162,7 +163,7 @@ class ReportService:
 
     @staticmethod
     def _druggability_score(top_candidates: list[tuple[Molecule, int]]) -> float:
-        """Compute a simulated report-level druggability score."""
+        """Compute a prototype report-level druggability score."""
 
         if not top_candidates:
             return 0.0

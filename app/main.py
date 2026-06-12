@@ -13,7 +13,7 @@ from sqlalchemy.exc import SQLAlchemyError
 
 from app.config import get_settings
 from app.database import SessionLocal, init_db
-from app.mock_data.validation import validate_mock_data
+from app.curated_data.validation import validate_curated_data
 from app.routers.health import router as health_router
 from app.routers.molecules import router as molecules_router
 from app.routers.reports import router as reports_router
@@ -24,10 +24,10 @@ from app.utils.molecule_image import pregenerate_molecule_images
 
 @asynccontextmanager
 async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
-    """Initialize database tables, validate mock data, and seed when empty."""
+    """Initialize database tables, validate curated seed data, and seed when empty."""
 
     init_db()
-    validate_mock_data()
+    validate_curated_data()
     with SessionLocal() as db:
         seed_database(db)
         pregenerate_molecule_images(db)
@@ -41,7 +41,7 @@ def create_app() -> FastAPI:
     app = FastAPI(
         title=settings.APP_NAME,
         version=settings.APP_VERSION,
-        description="AI-powered drug discovery prototype backend using mock data only.",
+        description="AI-powered drug discovery prototype backend using a curated pre-seeded molecular benchmark dataset.",
         lifespan=lifespan,
     )
     app.add_middleware(

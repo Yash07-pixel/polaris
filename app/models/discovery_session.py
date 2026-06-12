@@ -11,7 +11,7 @@ from app.database import Base
 
 
 class DiscoverySession(Base):
-    """A simulated discovery run grouping candidate evaluation activity."""
+    """A discovery run grouping candidate evaluation activity."""
 
     __tablename__ = "discovery_sessions"
 

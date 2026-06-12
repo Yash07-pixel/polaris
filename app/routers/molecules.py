@@ -24,7 +24,7 @@ def list_molecules(
     sort: SortMode = Query("rank"),
     db: Session = Depends(get_db),
 ) -> list[MoleculeResponse]:
-    """Return ranked seeded molecules across all demo targets."""
+    """Return ranked curated molecules across all demo targets."""
 
     molecules = db.scalars(
         select(Molecule).options(joinedload(Molecule.target)).order_by(Molecule.id)
@@ -42,7 +42,7 @@ def list_molecules_for_session(
     sort: SortMode = Query("rank"),
     db: Session = Depends(get_db),
 ) -> list[MoleculeResponse]:
-    """Return ranked seeded molecules for a completed discovery session target."""
+    """Return ranked curated molecules for a completed discovery session target."""
 
     session = db.scalar(select(DiscoverySession).where(DiscoverySession.id == session_id))
     if session is None:
@@ -64,7 +64,7 @@ def list_molecules_for_session(
 
 @router.get("/{molecule_id}", response_model=MoleculeResponse)
 def get_molecule(molecule_id: int, db: Session = Depends(get_db)) -> MoleculeResponse:
-    """Return detail for a single seeded molecule."""
+    """Return detail for a single curated molecule."""
 
     molecule = db.scalar(
         select(Molecule)
@@ -107,14 +107,14 @@ def _rank_molecules(molecules: list[Molecule], sort: SortMode) -> list[tuple[Mol
 
 
 def _rank_score(molecule: Molecule) -> float:
-    """Compute a simulated ranking score from seeded docking, QED, and safety values."""
+    """Compute a prototype ranking score from curated docking, QED, and safety values."""
 
     safety_penalty = 0.2 if admet_predictor.is_problematic(molecule) else 0.0
     return (-molecule.docking_score * 0.6) + (_qed_score(molecule) * 3.0) - safety_penalty
 
 
 def _qed_score(molecule: Molecule) -> float:
-    """Calculate QED from pre-seeded SMILES without creating new molecules."""
+    """Calculate QED from curated SMILES without creating new molecules."""
 
     mol = Chem.MolFromSmiles(molecule.smiles)
     if mol is None:
@@ -175,7 +175,7 @@ def _filter_reason(molecule: Molecule, lipinski_pass: bool) -> str | None:
 
 
 def _docking_detail(molecule: Molecule) -> DockingDetailResponse:
-    """Return mock binding details for rank-one molecules only."""
+    """Return prototype binding details for rank-one molecules only."""
 
     target_details = {
         "EGFR": ("ATP hinge pocket", ["Met793", "Leu718", "Asp855"], ["hydrogen bond", "pi-stacking"], 1.18),
@@ -186,7 +186,7 @@ def _docking_detail(molecule: Molecule) -> DockingDetailResponse:
     }
     pocket, residues, interactions, rmsd = target_details.get(
         molecule.target.gene_symbol,
-        ("Mock binding pocket", ["ResidueA", "ResidueB"], ["hydrogen bond"], 1.5),
+        ("Prototype binding pocket", ["ResidueA", "ResidueB"], ["hydrogen bond"], 1.5),
     )
     return DockingDetailResponse(
         binding_pocket=pocket,

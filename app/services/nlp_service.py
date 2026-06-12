@@ -8,7 +8,7 @@ from dataclasses import dataclass
 from typing import Any
 
 from app.config import Settings, get_settings
-from app.mock_data.targets import MOCK_TARGETS
+from app.curated_data.targets import CURATED_TARGETS
 
 
 @dataclass(frozen=True)
@@ -22,7 +22,7 @@ class TargetIdentificationResult:
 
 
 class NLPService:
-    """Identify one of the five predefined mock targets from user text."""
+    """Identify one of the five predefined curated targets from user text."""
 
     keyword_map: dict[str, tuple[str, ...]] = {
         "egfr": (
@@ -150,7 +150,7 @@ class NLPService:
                 "disease_area": target["disease_area"],
                 "mechanism": target["mechanism"],
             }
-            for target in MOCK_TARGETS
+            for target in CURATED_TARGETS
         ]
         return (
             "You are classifying a user query for a controlled drug-discovery demo.\n"
@@ -164,9 +164,9 @@ class NLPService:
 
     @property
     def available_target_keys(self) -> set[str]:
-        """Return the allowed mock target keys."""
+        """Return the allowed curated target keys."""
 
-        return {target["key"] for target in MOCK_TARGETS}
+        return {target["key"] for target in CURATED_TARGETS}
 
     @staticmethod
     def _parse_json_response(text: str) -> dict[str, Any]:

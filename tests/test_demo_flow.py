@@ -5,9 +5,9 @@ from collections import Counter
 from fastapi.testclient import TestClient
 from rdkit import Chem
 
-from app.mock_data.molecules import MOCK_MOLECULES
-from app.mock_data.targets import MOCK_TARGETS
-from app.mock_data.validation import validate_mock_data
+from app.curated_data.molecules import CURATED_MOLECULES
+from app.curated_data.targets import CURATED_TARGETS
+from app.curated_data.validation import validate_curated_data
 
 
 def _create_session(client: TestClient, query: str) -> dict:
@@ -18,20 +18,20 @@ def _create_session(client: TestClient, query: str) -> dict:
     return response.json()
 
 
-def test_mock_data_validation_invariants() -> None:
-    """Validate the strict controlled-demo mock dataset."""
+def test_curated_data_validation_invariants() -> None:
+    """Validate the strict curated prototype dataset."""
 
-    validate_mock_data()
-    assert len(MOCK_TARGETS) == 5
-    assert len(MOCK_MOLECULES) == 40
-    counts = Counter(str(molecule["target_key"]) for molecule in MOCK_MOLECULES)
-    toxic_counts = Counter(str(molecule["target_key"]) for molecule in MOCK_MOLECULES if molecule["is_toxic"])
+    validate_curated_data()
+    assert len(CURATED_TARGETS) == 5
+    assert len(CURATED_MOLECULES) == 40
+    counts = Counter(str(molecule["target_key"]) for molecule in CURATED_MOLECULES)
+    toxic_counts = Counter(str(molecule["target_key"]) for molecule in CURATED_MOLECULES if molecule["is_toxic"])
 
-    for target in MOCK_TARGETS:
+    for target in CURATED_TARGETS:
         assert counts[target["key"]] == 8
         assert toxic_counts[target["key"]] >= 1
 
-    for molecule in MOCK_MOLECULES:
+    for molecule in CURATED_MOLECULES:
         assert Chem.MolFromSmiles(str(molecule["smiles"])) is not None
         assert float(molecule["docking_score"]) < 0
 

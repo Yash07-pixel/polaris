@@ -15,7 +15,7 @@ router = APIRouter(prefix="/api/v1/reports", tags=["reports"])
 
 @router.post("/generate", response_model=ReportResponse, status_code=status.HTTP_201_CREATED)
 def generate_report(payload: ReportGenerateRequest, db: Session = Depends(get_db)) -> ReportResponse:
-    """Generate a simulated scientific report and PDF for a session."""
+    """Generate a research-style report and PDF for a session."""
 
     try:
         report = ReportService().generate_report(db, payload.session_id)

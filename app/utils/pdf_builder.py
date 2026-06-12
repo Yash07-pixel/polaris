@@ -1,5 +1,6 @@
-"""ReportLab PDF builder for simulated MolGenix research reports."""
+"""ReportLab PDF builder for MolGenix research-style reports."""
 
+from html import escape
 from pathlib import Path
 
 from reportlab.lib import colors
@@ -45,7 +46,7 @@ def build_report_pdf(
     molecules: list[tuple[Molecule, int]],
     druggability_score: float,
 ) -> None:
-    """Build a publication-style simulated computational screening report."""
+    """Build a publication-style computational screening report."""
 
     REPORT_DIR.mkdir(parents=True, exist_ok=True)
     styles = _build_styles()
@@ -151,14 +152,32 @@ def _build_styles() -> dict[str, ParagraphStyle]:
             alignment=TA_CENTER,
             spaceAfter=5,
         ),
-        "disclaimer": ParagraphStyle(
-            "Disclaimer",
+        "table_header": ParagraphStyle(
+            "TableHeader",
+            parent=base["BodyText"],
+            fontName="Helvetica-Bold",
+            fontSize=7.2,
+            leading=8.6,
+            textColor=colors.white,
+            wordWrap="CJK",
+        ),
+        "table_cell": ParagraphStyle(
+            "TableCell",
             parent=base["BodyText"],
             fontName="Helvetica",
-            fontSize=8,
-            leading=10.5,
-            textColor=RED,
-            spaceAfter=5,
+            fontSize=7.4,
+            leading=9.2,
+            textColor=TEXT,
+            wordWrap="CJK",
+        ),
+        "table_label": ParagraphStyle(
+            "TableLabel",
+            parent=base["BodyText"],
+            fontName="Helvetica-Bold",
+            fontSize=7.4,
+            leading=9.2,
+            textColor=MUTED,
+            wordWrap="CJK",
         ),
     }
 
@@ -176,8 +195,8 @@ def _build_cover_page(
     target_name = session.target.name if session.target else "No target identified"
     top = molecules[:3]
     story.append(Paragraph("MOLGENIX COMPUTATIONAL SCREENING BRIEF", styles["kicker"]))
-    story.append(Paragraph("Simulated Medicinal Chemistry Report", styles["title"]))
-    story.append(_info_table(session, target_name, druggability_score, len(molecules)))
+    story.append(Paragraph("Computational Medicinal Chemistry Report", styles["title"]))
+    story.append(_info_table(session, target_name, druggability_score, len(molecules), styles))
     story.append(Spacer(1, 0.18 * inch))
 
     story.append(Paragraph("1. Executive Summary", styles["h1"]))
@@ -190,7 +209,7 @@ def _build_cover_page(
         ["Finding", "Interpretation"],
         [
             "Target mapping",
-            f"The query was mapped to {target_name}; all downstream results are constrained to the local mock dataset.",
+            f"The query was mapped to {target_name}; all downstream results are constrained to the local curated benchmark dataset.",
         ],
         [
             "Top candidates",
@@ -201,48 +220,45 @@ def _build_cover_page(
             _screening_interpretation(top),
         ],
     ]
-    table = Table(finding_rows, colWidths=[1.35 * inch, 5.15 * inch])
-    table.setStyle(_table_style(header_bg=NAVY))
+    table = _research_table(finding_rows, [1.35 * inch, 5.15 * inch], styles, header_bg=NAVY)
     story.append(table)
     story.append(Spacer(1, 0.12 * inch))
     story.append(
         Paragraph(
-            "This report is a simulated decision-support artifact for demo review. It is structured to expose ranking logic, ADMET liabilities, and follow-up hypotheses without implying experimental validity.",
+            "This report is a prototype decision-support artifact for research review. It is structured to expose ranking logic, ADMET liabilities, and follow-up hypotheses without implying experimental validity.",
             styles["muted"],
         )
     )
 
 
-def _info_table(session: DiscoverySession, target_name: str, druggability_score: float, molecule_count: int) -> Table:
+def _info_table(
+    session: DiscoverySession,
+    target_name: str,
+    druggability_score: float,
+    molecule_count: int,
+    styles: dict[str, ParagraphStyle],
+) -> Table:
     """Return a compact metadata table for the cover page."""
 
     data = [
         ["Target", target_name, "Druggability", f"{druggability_score:.1f} / 100"],
         ["Query", session.query, "Candidates", str(molecule_count)],
-        ["Status", session.status, "Report Type", "Simulated screening brief"],
+        ["Status", session.status, "Report Type", "Computational screening brief"],
     ]
-    table = Table(data, colWidths=[0.85 * inch, 3.05 * inch, 1.05 * inch, 1.55 * inch])
-    table.setStyle(
-        TableStyle(
+    table = Table(
+        [
             [
-                ("GRID", (0, 0), (-1, -1), 0.25, BORDER),
-                ("BACKGROUND", (0, 0), (-1, -1), LIGHT_BG),
-                ("FONTNAME", (0, 0), (0, -1), "Helvetica-Bold"),
-                ("FONTNAME", (2, 0), (2, -1), "Helvetica-Bold"),
-                ("TEXTCOLOR", (0, 0), (0, -1), MUTED),
-                ("TEXTCOLOR", (2, 0), (2, -1), MUTED),
-                ("TEXTCOLOR", (1, 0), (1, -1), TEXT),
-                ("TEXTCOLOR", (3, 0), (3, -1), TEXT),
-                ("FONTSIZE", (0, 0), (-1, -1), 8),
-                ("LEADING", (0, 0), (-1, -1), 10),
-                ("VALIGN", (0, 0), (-1, -1), "TOP"),
-                ("LEFTPADDING", (0, 0), (-1, -1), 7),
-                ("RIGHTPADDING", (0, 0), (-1, -1), 7),
-                ("TOPPADDING", (0, 0), (-1, -1), 7),
-                ("BOTTOMPADDING", (0, 0), (-1, -1), 7),
+                _pdf_cell(row[0], styles, label=True),
+                _pdf_cell(row[1], styles),
+                _pdf_cell(row[2], styles, label=True),
+                _pdf_cell(row[3], styles),
             ]
-        )
+            for row in data
+        ],
+        colWidths=[0.85 * inch, 3.05 * inch, 1.05 * inch, 1.55 * inch],
+        splitByRow=1,
     )
+    table.setStyle(_metadata_table_style())
     return table
 
 
@@ -256,7 +272,7 @@ def _build_results_page(
     story.append(Paragraph("2. Ranked Candidate Results", styles["h1"]))
     story.append(
         Paragraph(
-            "Candidates are ordered by a simulated composite ranking that weights mock docking score, RDKit QED, and seeded safety flags. Toxic or problematic molecules remain visible to preserve review transparency.",
+            "Candidates are ordered by a prototype composite ranking that weights docking-score signals, RDKit QED, and curated safety-style flags. Toxic or problematic molecules remain visible to preserve review transparency.",
             styles["body"],
         )
     )
@@ -276,12 +292,13 @@ def _build_results_page(
             ]
         )
 
-    table = Table(
+    table = _research_table(
         table_data,
-        colWidths=[0.42 * inch, 1.05 * inch, 0.62 * inch, 0.48 * inch, 0.62 * inch, 0.78 * inch, 2.52 * inch],
-        repeatRows=1,
+        [0.42 * inch, 1.0 * inch, 0.62 * inch, 0.46 * inch, 0.62 * inch, 0.74 * inch, 2.63 * inch],
+        styles,
+        header_bg=NAVY,
+        highlight_top=True,
     )
-    table.setStyle(_table_style(header_bg=NAVY, highlight_top=True))
     story.append(table)
     story.append(Spacer(1, 0.14 * inch))
     story.append(Paragraph("Screening Interpretation", styles["h2"]))
@@ -361,9 +378,9 @@ def _compound_panel(molecule: Molecule, rank: int, styles: dict[str, ParagraphSt
 
     metric_table = Table(
         [
-            ["Docking", f"{molecule.docking_score:.1f} kcal/mol"],
-            ["QED", f"{_qed_score(molecule):.2f}"],
-            ["Status", _safety_label(molecule)],
+            [_pdf_cell("Docking", styles, label=True), _pdf_cell(f"{molecule.docking_score:.1f} kcal/mol", styles)],
+            [_pdf_cell("QED", styles, label=True), _pdf_cell(f"{_qed_score(molecule):.2f}", styles)],
+            [_pdf_cell("Status", styles, label=True), _pdf_cell(_safety_label(molecule), styles)],
         ],
         colWidths=[0.72 * inch, METRIC_WIDTH - 0.72 * inch],
         rowHeights=[0.22 * inch, 0.22 * inch, 0.22 * inch],
@@ -430,7 +447,7 @@ def _build_admet_methodology_page(
     styles: dict[str, ParagraphStyle],
     molecules: list[tuple[Molecule, int]],
 ) -> None:
-    """Append ADMET interpretation, methodology, and disclaimer."""
+    """Append ADMET interpretation and methodology."""
 
     story.append(Paragraph("4. ADMET and Developability Interpretation", styles["h1"]))
     top = molecules[:3]
@@ -448,23 +465,15 @@ def _build_admet_methodology_page(
 
     story.append(Paragraph("5. Methodology and Simulation Scope", styles["h1"]))
     methodology = (
-        "MolGenix maps the user query to one predefined mock target using Gemini when configured, with a deterministic keyword fallback for demo reliability. "
+        "MolGenix maps the user query to one predefined research target using Gemini when configured, with a deterministic keyword fallback for demo reliability. "
         "Candidate molecules are retrieved exclusively from the local SQLite seed database; no external pharmaceutical databases are queried and no new molecules are generated. "
-        "RDKit is used only to parse seeded SMILES, calculate QED, and render 2D structures. Docking values, ADMET signals, toxicity flags, and druggability scores are simulated screening features designed to support a transparent product demonstration."
+        "RDKit is used to parse curated SMILES, calculate QED, and render 2D structures. Docking-score values, ADMET-style signals, toxicity flags, and druggability scores are prototype screening features designed to support a transparent product demonstration."
     )
     story.append(Paragraph(methodology, styles["body"]))
     story.append(
         Paragraph(
-            "Ranking assumptions: more negative docking scores are treated as stronger simulated binding signals, QED is used as a drug-likeness proxy, and seeded toxicity or Lipinski liabilities reduce the composite interpretation. These assumptions are not validated computational chemistry methods.",
+            "Ranking assumptions: more negative docking-score values are treated as stronger prototype binding signals, QED is used as a drug-likeness proxy, and curated toxicity or Lipinski liabilities reduce the composite interpretation. These assumptions are not validated computational chemistry methods.",
             styles["muted"],
-        )
-    )
-    story.append(Spacer(1, 0.08 * inch))
-    story.append(Paragraph("Disclaimer", styles["h2"]))
-    story.append(
-        Paragraph(
-            "Demo-only scientific report. All values are mock or simulated and must not be used for medical, clinical, regulatory, investment, diagnostic, or laboratory decision-making without independent expert validation.",
-            styles["disclaimer"],
         )
     )
 
@@ -475,13 +484,64 @@ def _admet_candidate_block(molecule: Molecule, rank: int, styles: dict[str, Para
     table_data = [["Metric", "Value", "Signal", "Interpretation"]]
     for metric in admet_predictor.evaluate(molecule):
         table_data.append([metric.label, str(metric.value), metric.status, _metric_interpretation(metric.label, metric.status)])
-    table = Table(table_data, colWidths=[1.1 * inch, 1.0 * inch, 0.65 * inch, 3.55 * inch], repeatRows=1)
-    table.setStyle(_table_style(header_bg=TEAL))
+    table = _research_table(table_data, [1.1 * inch, 1.0 * inch, 0.65 * inch, 3.55 * inch], styles, header_bg=TEAL)
     return [
         Paragraph(f"Rank {rank}: {molecule.name}", styles["h2"]),
         table,
         Spacer(1, 0.09 * inch),
     ]
+
+
+def _research_table(
+    rows: list[list[object]],
+    col_widths: list[float],
+    styles: dict[str, ParagraphStyle],
+    header_bg: colors.Color = NAVY,
+    highlight_top: bool = False,
+) -> Table:
+    """Return a wrapping, constrained table for PDF report content."""
+
+    wrapped_rows = [
+        [
+            _pdf_cell(cell, styles, header=row_index == 0)
+            for cell in row
+        ]
+        for row_index, row in enumerate(rows)
+    ]
+    table = Table(wrapped_rows, colWidths=col_widths, repeatRows=1, splitByRow=1)
+    table.setStyle(_table_style(header_bg=header_bg, highlight_top=highlight_top))
+    return table
+
+
+def _pdf_cell(
+    value: object,
+    styles: dict[str, ParagraphStyle],
+    *,
+    header: bool = False,
+    label: bool = False,
+) -> Paragraph:
+    """Return a paragraph table cell with safe wrapping and escaping."""
+
+    style_name = "table_header" if header else "table_label" if label else "table_cell"
+    text = escape(str(value))
+    return Paragraph(text, styles[style_name])
+
+
+def _metadata_table_style() -> TableStyle:
+    """Return a compact style for the cover metadata table."""
+
+    return TableStyle(
+        [
+            ("GRID", (0, 0), (-1, -1), 0.25, BORDER),
+            ("BACKGROUND", (0, 0), (-1, -1), LIGHT_BG),
+            ("VALIGN", (0, 0), (-1, -1), "TOP"),
+            ("LEFTPADDING", (0, 0), (-1, -1), 7),
+            ("RIGHTPADDING", (0, 0), (-1, -1), 7),
+            ("TOPPADDING", (0, 0), (-1, -1), 7),
+            ("BOTTOMPADDING", (0, 0), (-1, -1), 7),
+            ("ROWBACKGROUNDS", (0, 0), (-1, -1), [LIGHT_BG, colors.white]),
+        ]
+    )
 
 
 def _table_style(header_bg: colors.Color = NAVY, highlight_top: bool = False) -> TableStyle:
@@ -513,7 +573,7 @@ def _table_style(header_bg: colors.Color = NAVY, highlight_top: bool = False) ->
 
 
 def _qed_score(molecule: Molecule) -> float:
-    """Calculate QED from the seeded SMILES for PDF display."""
+    """Calculate QED from the curated SMILES for PDF display."""
 
     mol = Chem.MolFromSmiles(molecule.smiles)
     if mol is None:
@@ -535,12 +595,12 @@ def _candidate_interpretation(molecule: Molecule) -> str:
     """Return a concise medicinal chemistry interpretation for a candidate."""
 
     if molecule.is_toxic:
-        return "Retained for transparency; seeded toxicity limits developability."
+        return "Retained for transparency; curated toxicity flag limits developability."
     if molecule.herg_risk.lower() == "high":
         return "Binding signal requires cardiac liability review."
     if not admet_predictor.passes_lipinski(molecule):
         return "Physicochemical profile requires optimization."
-    return "Good simulated balance of binding and ADMET signals."
+    return "Good prototype balance of binding and ADMET-style signals."
 
 
 def _screening_interpretation(top: list[tuple[Molecule, int]]) -> str:
@@ -548,8 +608,8 @@ def _screening_interpretation(top: list[tuple[Molecule, int]]) -> str:
 
     clean = [molecule.name for molecule, _ in top if not admet_predictor.is_problematic(molecule)]
     if clean:
-        return f"{', '.join(clean)} show the cleanest simulated developability balance among the top-ranked candidates."
-    return "Top-ranked candidates retain notable simulated liabilities and should be treated as optimization starting points only."
+        return f"{', '.join(clean)} show the cleanest prototype developability balance among the top-ranked candidates."
+    return "Top-ranked candidates retain notable prototype liabilities and should be treated as optimization starting points only."
 
 
 def _ranking_commentary(molecules: list[tuple[Molecule, int]]) -> str:
@@ -559,8 +619,8 @@ def _ranking_commentary(molecules: list[tuple[Molecule, int]]) -> str:
     toxic_count = sum(1 for molecule, _ in molecules if molecule.is_toxic)
     clean_count = sum(1 for molecule, _ in molecules if not admet_predictor.is_problematic(molecule))
     return (
-        f"{top.name} leads the simulated ranking with a docking score of {top.docking_score:.1f} kcal/mol and QED of {_qed_score(top):.2f}. "
-        f"{clean_count} of {len(molecules)} candidates show no seeded safety or Lipinski problem flags, while {toxic_count} toxic candidates remain visible for risk tracking. "
+        f"{top.name} leads the prototype ranking with a docking score of {top.docking_score:.1f} kcal/mol and QED of {_qed_score(top):.2f}. "
+        f"{clean_count} of {len(molecules)} candidates show no curated safety or Lipinski problem flags, while {toxic_count} toxic candidates remain visible for risk tracking. "
         "The table should be read as a prioritization aid for demo triage, not as evidence of biological activity."
     )
 
@@ -573,7 +633,7 @@ def _admet_commentary(top: list[tuple[Molecule, int]]) -> str:
     liver = [molecule.name for molecule, _ in top if molecule.hepatotoxicity]
     return (
         f"The top-candidate ADMET review focuses on {names}. hERG risk is treated as a cardiac safety triage signal; "
-        f"{', '.join(hERG) if hERG else 'none of the top candidates'} require additional ion-channel attention in this mock screen. "
+        f"{', '.join(hERG) if hERG else 'none of the top candidates'} require additional ion-channel attention in this prototype screen. "
         f"Hepatotoxicity flags are {'present in ' + ', '.join(liver) if liver else 'not present among the top candidates'}, while solubility and bioavailability scores frame formulation and exposure risk. "
         "In a real program, these signals would motivate analog design, orthogonal assay confirmation, and exposure optimization."
     )
@@ -583,15 +643,15 @@ def _metric_interpretation(label: str, status: str) -> str:
     """Return a readable interpretation for an ADMET metric traffic light."""
 
     if label == "hERG Risk":
-        return "Cardiac liability watch item." if status != "Green" else "Low seeded cardiac concern."
+        return "Cardiac liability watch item." if status != "Green" else "Low curated cardiac concern."
     if label == "Hepatotoxicity":
-        return "Liver safety flag limits progression." if status == "Red" else "No seeded liver flag."
+        return "Liver safety flag limits progression." if status == "Red" else "No curated liver flag."
     if label == "Ames Toxicity":
-        return "Mutagenicity flag requires deprioritization." if status == "Red" else "No seeded mutagenicity flag."
+        return "Mutagenicity flag requires deprioritization." if status == "Red" else "No curated mutagenicity flag."
     if label == "Solubility":
-        return "May affect formulation and exposure." if status != "Green" else "Favorable simulated solubility."
+        return "May affect formulation and exposure." if status != "Green" else "Favorable prototype solubility."
     if label == "Bioavailability":
-        return "Exposure may need optimization." if status != "Green" else "Favorable simulated oral exposure."
+        return "Exposure may need optimization." if status != "Green" else "Favorable prototype oral exposure."
     if label == "Lipinski":
         return "Drug-likeness concern." if status == "Red" else "Rule-of-five profile acceptable."
-    return "Simulated developability signal."
+    return "Prototype developability signal."

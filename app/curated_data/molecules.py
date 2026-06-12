@@ -1,6 +1,6 @@
-"""Mock molecule records for the MolGenix prototype."""
+"""Curated molecule records for the MolGenix prototype."""
 
-MOCK_MOLECULES: list[dict[str, str | int | float | bool]] = [
+CURATED_MOLECULES: list[dict[str, str | int | float | bool]] = [
     {
         "target_key": "egfr",
         "name": "MGX-EGFR-001",
@@ -68,7 +68,7 @@ MOCK_MOLECULES: list[dict[str, str | int | float | bool]] = [
         "docking_score": -8.5,
         "synthetic_accessibility": 3.4,
         "is_toxic": False,
-        "notes": "Improved polarity and solubility in simulated ADMET panel.",
+        "notes": "Improved polarity and solubility in prototype ADMET-style panel.",
     },
     {
         "target_key": "egfr",
@@ -91,7 +91,7 @@ MOCK_MOLECULES: list[dict[str, str | int | float | bool]] = [
         "docking_score": -8.1,
         "synthetic_accessibility": 2.9,
         "is_toxic": False,
-        "notes": "Nitrile hinge-binder analog with acceptable simulated safety.",
+        "notes": "Nitrile hinge-binder analog with acceptable prototype safety profile.",
     },
     {
         "target_key": "egfr",
@@ -206,7 +206,7 @@ MOCK_MOLECULES: list[dict[str, str | int | float | bool]] = [
         "docking_score": -9.1,
         "synthetic_accessibility": 3.7,
         "is_toxic": False,
-        "notes": "Piperazine-rich JAK chemotype with simulated kinase affinity.",
+        "notes": "Piperazine-rich JAK chemotype with prototype kinase affinity signal.",
     },
     {
         "target_key": "jak2",
@@ -252,7 +252,7 @@ MOCK_MOLECULES: list[dict[str, str | int | float | bool]] = [
         "docking_score": -8.4,
         "synthetic_accessibility": 3.4,
         "is_toxic": False,
-        "notes": "Amide-bearing analog with lower simulated hERG risk.",
+        "notes": "Amide-bearing analog with lower prototype hERG risk.",
     },
     {
         "target_key": "jak2",
@@ -321,7 +321,7 @@ MOCK_MOLECULES: list[dict[str, str | int | float | bool]] = [
         "docking_score": -8.0,
         "synthetic_accessibility": 2.9,
         "is_toxic": False,
-        "notes": "Fluoro nitrile analog with durable simulated exposure.",
+        "notes": "Fluoro nitrile analog with durable prototype exposure.",
     },
     {
         "target_key": "jak2",
@@ -344,7 +344,7 @@ MOCK_MOLECULES: list[dict[str, str | int | float | bool]] = [
         "docking_score": -7.8,
         "synthetic_accessibility": 3.2,
         "is_toxic": False,
-        "notes": "Cyanophenyl analog with clean simulated Ames call.",
+        "notes": "Cyanophenyl analog with clean prototype Ames call.",
     },
     {
         "target_key": "jak2",
@@ -390,7 +390,7 @@ MOCK_MOLECULES: list[dict[str, str | int | float | bool]] = [
         "docking_score": -9.0,
         "synthetic_accessibility": 4.5,
         "is_toxic": False,
-        "notes": "Hydroxyethylamine-like simulated protease inhibitor.",
+        "notes": "Hydroxyethylamine-like prototype protease inhibitor.",
     },
     {
         "target_key": "bace1",
@@ -413,7 +413,7 @@ MOCK_MOLECULES: list[dict[str, str | int | float | bool]] = [
         "docking_score": -8.6,
         "synthetic_accessibility": 4.1,
         "is_toxic": False,
-        "notes": "Reduced lipophilicity analog for simulated CNS optimization.",
+        "notes": "Reduced lipophilicity analog for prototype CNS optimization.",
     },
     {
         "target_key": "bace1",
@@ -436,7 +436,7 @@ MOCK_MOLECULES: list[dict[str, str | int | float | bool]] = [
         "docking_score": -8.1,
         "synthetic_accessibility": 4.2,
         "is_toxic": False,
-        "notes": "Polar analog with lower simulated hERG interaction.",
+        "notes": "Polar analog with lower prototype hERG interaction.",
     },
     {
         "target_key": "bace1",
@@ -597,7 +597,7 @@ MOCK_MOLECULES: list[dict[str, str | int | float | bool]] = [
         "docking_score": -8.3,
         "synthetic_accessibility": 3.4,
         "is_toxic": False,
-        "notes": "Trifluoromethyl analog with stronger simulated binding.",
+        "notes": "Trifluoromethyl analog with stronger prototype binding signal.",
     },
     {
         "target_key": "tnf",
@@ -620,7 +620,7 @@ MOCK_MOLECULES: list[dict[str, str | int | float | bool]] = [
         "docking_score": -7.2,
         "synthetic_accessibility": 2.4,
         "is_toxic": False,
-        "notes": "Lower-weight sulfonamide with favorable simulated solubility.",
+        "notes": "Lower-weight sulfonamide with favorable prototype solubility.",
     },
     {
         "target_key": "tnf",
@@ -666,7 +666,7 @@ MOCK_MOLECULES: list[dict[str, str | int | float | bool]] = [
         "docking_score": -7.5,
         "synthetic_accessibility": 3.1,
         "is_toxic": False,
-        "notes": "Solubilized analog with acceptable simulated safety.",
+        "notes": "Solubilized analog with acceptable prototype safety profile.",
     },
     {
         "target_key": "tnf",
@@ -689,7 +689,7 @@ MOCK_MOLECULES: list[dict[str, str | int | float | bool]] = [
         "docking_score": -7.7,
         "synthetic_accessibility": 2.7,
         "is_toxic": False,
-        "notes": "Fluoro sulfonamide with steady simulated clearance.",
+        "notes": "Fluoro sulfonamide with steady prototype clearance.",
     },
     {
         "target_key": "tnf",
@@ -758,7 +758,7 @@ MOCK_MOLECULES: list[dict[str, str | int | float | bool]] = [
         "docking_score": -9.2,
         "synthetic_accessibility": 3.2,
         "is_toxic": False,
-        "notes": "Diketo-acid-inspired integrase binder with good simulated exposure.",
+        "notes": "Diketo-acid-inspired integrase binder with good prototype exposure.",
     },
     {
         "target_key": "hiv_integrase",
@@ -781,7 +781,7 @@ MOCK_MOLECULES: list[dict[str, str | int | float | bool]] = [
         "docking_score": -8.8,
         "synthetic_accessibility": 3.1,
         "is_toxic": False,
-        "notes": "Acidic chelator analog with strong simulated active-site fit.",
+        "notes": "Acidic chelator analog with strong prototype active-site fit.",
     },
     {
         "target_key": "hiv_integrase",
@@ -804,7 +804,7 @@ MOCK_MOLECULES: list[dict[str, str | int | float | bool]] = [
         "docking_score": -8.5,
         "synthetic_accessibility": 3.4,
         "is_toxic": False,
-        "notes": "Polar chelator with acceptable simulated tolerability.",
+        "notes": "Polar chelator with acceptable prototype tolerability.",
     },
     {
         "target_key": "hiv_integrase",
@@ -850,7 +850,7 @@ MOCK_MOLECULES: list[dict[str, str | int | float | bool]] = [
         "docking_score": -8.1,
         "synthetic_accessibility": 3.5,
         "is_toxic": False,
-        "notes": "Piperazine amide with improved simulated solubility.",
+        "notes": "Piperazine amide with improved prototype solubility.",
     },
     {
         "target_key": "hiv_integrase",

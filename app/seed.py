@@ -3,9 +3,9 @@
 from sqlalchemy import func, select
 from sqlalchemy.orm import Session
 
-from app.mock_data.molecules import MOCK_MOLECULES
-from app.mock_data.targets import MOCK_TARGETS
-from app.mock_data.validation import validate_mock_data
+from app.curated_data.molecules import CURATED_MOLECULES
+from app.curated_data.targets import CURATED_TARGETS
+from app.curated_data.validation import validate_curated_data
 from app.models import DrugTarget, Molecule
 
 
@@ -16,9 +16,9 @@ def _table_count(db: Session, model: type[DrugTarget] | type[Molecule]) -> int:
 
 
 def seed_database(db: Session) -> None:
-    """Seed mock targets and molecules when the prototype database is empty."""
+    """Seed curated targets and molecules when the prototype database is empty."""
 
-    validate_mock_data()
+    validate_curated_data()
 
     target_count = _table_count(db, DrugTarget)
     molecule_count = _table_count(db, Molecule)
@@ -27,7 +27,7 @@ def seed_database(db: Session) -> None:
         return
 
     targets_by_key: dict[str, DrugTarget] = {}
-    for target_data in MOCK_TARGETS:
+    for target_data in CURATED_TARGETS:
         target = DrugTarget(
             name=target_data["name"],
             gene_symbol=target_data["gene_symbol"],
@@ -41,7 +41,7 @@ def seed_database(db: Session) -> None:
 
     db.flush()
 
-    for molecule_data in MOCK_MOLECULES:
+    for molecule_data in CURATED_MOLECULES:
         data = dict(molecule_data)
         target_key = str(data.pop("target_key"))
         molecule = Molecule(target_id=targets_by_key[target_key].id, **data)
@@ -51,10 +51,10 @@ def seed_database(db: Session) -> None:
 
 
 def _sync_existing_seed_data(db: Session) -> None:
-    """Synchronize existing prototype rows with the mock dataset without duplicating data."""
+    """Synchronize existing prototype rows with the curated dataset without duplicating data."""
 
     targets_by_key: dict[str, DrugTarget] = {}
-    for target_data in MOCK_TARGETS:
+    for target_data in CURATED_TARGETS:
         target = db.scalar(select(DrugTarget).where(DrugTarget.name == target_data["name"]))
         if target is None:
             continue
@@ -65,7 +65,7 @@ def _sync_existing_seed_data(db: Session) -> None:
         target.description = target_data["description"]
         targets_by_key[target_data["key"]] = target
 
-    for molecule_data in MOCK_MOLECULES:
+    for molecule_data in CURATED_MOLECULES:
         molecule = db.scalar(select(Molecule).where(Molecule.name == str(molecule_data["name"])))
         if molecule is None:
             continue

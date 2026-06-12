@@ -2,7 +2,7 @@
 
 **AI-powered biomedical drug discovery prototype**
 
-MolGenix is a polished MVP/demo platform that turns plain-English biomedical queries into ranked mock drug candidates. It combines NLP target identification, pre-seeded molecule ranking, RDKit structure rendering, ADMET-style visualization, and downloadable PDF reports in a single hackathon-ready workflow.
+MolGenix is a polished MVP/demo platform that turns plain-English biomedical queries into ranked candidate molecules from a curated molecular benchmark-style dataset. It combines NLP target identification, pre-seeded molecule ranking, RDKit structure rendering, ADMET-style visualization, and downloadable PDF reports in a single hackathon-ready workflow.
 
 > Built for hackathons, portfolios, AI engineering showcases, and biomedical AI demonstrations.
 
@@ -18,8 +18,8 @@ MolGenix is a polished MVP/demo platform that turns plain-English biomedical que
 - Natural language biomedical query parsing
 - AI-assisted target identification with Gemini
 - Offline keyword fallback logic for reliable demos
-- Controlled mock target database with exactly 5 predefined targets
-- Ranked mock molecular candidates from pre-seeded data
+- Controlled target knowledge base with exactly 5 predefined targets
+- Ranked molecular candidates from a curated pre-seeded dataset
 - RDKit molecule structure rendering as local PNG images
 - ADMET traffic-light visualization
 - Safe/toxic/problematic molecule labeling
@@ -37,8 +37,8 @@ MolGenix is a polished MVP/demo platform that turns plain-English biomedical que
 1. User enters a plain-English biomedical query.
 2. Gemini identifies one of the predefined demo targets.
 3. If Gemini is unavailable, deterministic keyword fallback is used.
-4. Mock candidates are retrieved from the local SQLite database.
-5. Molecules are ranked using simulated docking, QED, and ADMET signals.
+4. Curated candidate molecules are retrieved from the local SQLite database.
+5. Molecules are ranked using prototype docking-score, QED, and ADMET-style evaluation signals.
 6. RDKit-rendered structures and ADMET indicators are displayed in the UI.
 7. A multi-page PDF report is generated and downloaded.
 
@@ -52,10 +52,10 @@ Gemini NLP Layer
 Target Identification
    |
    v
-Mock Molecule Database
+Curated Molecular Benchmark Dataset
    |
    v
-ADMET + Simulated Docking Pipeline
+ADMET-Style Evaluation + Docking-Score Pipeline
    |
    v
 Frontend Visualization
@@ -89,7 +89,7 @@ molgenix/
 ├── app/
 │   ├── ml/
 │   │   └── admet_predictor.py
-│   ├── mock_data/
+│   ├── curated_data/
 │   │   ├── molecules.py
 │   │   ├── targets.py
 │   │   └── validation.py
@@ -205,10 +205,10 @@ Gemini is optional for demo use. If no API key is configured, MolGenix uses dete
 | POST | `/api/v1/sessions/` | Create a discovery session from a biomedical query |
 | GET | `/api/v1/sessions/` | List discovery sessions |
 | GET | `/api/v1/sessions/{session_id}` | Fetch one discovery session |
-| GET | `/api/v1/molecules/` | List ranked seeded molecules |
+| GET | `/api/v1/molecules/` | List ranked curated molecules |
 | GET | `/api/v1/molecules/{id}` | Fetch molecule detail |
 | GET | `/api/v1/molecules/session/{session_id}` | Fetch ranked molecules for a session target |
-| POST | `/api/v1/reports/generate` | Generate a simulated research report |
+| POST | `/api/v1/reports/generate` | Generate a research-style report |
 | GET | `/api/v1/reports/{id}/download` | Download report PDF |
 | GET | `/api/v1/reports/session/{session_id}` | List reports for a session |
 
@@ -225,7 +225,7 @@ Find EGFR inhibitors for lung cancer
 Output:
 
 - Target identified as EGFR
-- Mock molecules ranked by simulated score
+- Curated molecules ranked by prototype scoring
 - ADMET signals shown as traffic-light indicators
 - Toxic/problematic molecules clearly marked
 - PDF report generated for download
@@ -283,7 +283,7 @@ The tests cover:
 - Report generation
 - PDF download
 - Static frontend serving
-- Mock-data validation invariants
+- Curated dataset validation invariants
 
 ---
 
@@ -303,7 +303,7 @@ The tests cover:
 
 > **MolGenix is a prototype/demo project only.**
 >
-> All targets, molecules, docking scores, ADMET values, rankings, and reports are mock or simulated. This project is not intended for medical use, clinical decision-making, regulatory work, pharmaceutical development, diagnosis, treatment selection, or real-world biomedical research conclusions.
+> MolGenix uses a curated, pre-seeded molecular benchmark-style dataset with prototype ADMET-style and docking-score evaluation signals. The current system does not perform validated DeepChem inference, real docking, or wet-lab analysis. This project is not intended for medical use, clinical decision-making, regulatory work, pharmaceutical development, diagnosis, treatment selection, or real-world biomedical research conclusions.
 
 ---
 

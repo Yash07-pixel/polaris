@@ -13,7 +13,7 @@ class ADMETMetricResponse(BaseModel):
 
 
 class DockingDetailResponse(BaseModel):
-    """Mock docking detail shown for rank-one molecules."""
+    """Prototype docking detail shown for rank-one molecules."""
 
     binding_pocket: str
     key_residues: list[str]
