@@ -2,7 +2,7 @@
 
 from collections.abc import Generator
 
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine, inspect, text
 from sqlalchemy.orm import DeclarativeBase, Session, sessionmaker
 
 from app.config import get_settings
@@ -35,6 +35,39 @@ def get_db() -> Generator[Session, None, None]:
 
 def init_db() -> None:
     """Create all database tables."""
+
+    from app import models  # noqa: F401
+
+    Base.metadata.create_all(bind=engine)
+    _refresh_session_tables_if_needed()
+
+
+def _refresh_session_tables_if_needed() -> None:
+    """Refresh prototype session tables when their shape changes between phases."""
+
+    if not settings.DATABASE_URL.startswith("sqlite"):
+        return
+
+    inspector = inspect(engine)
+    if "discovery_sessions" not in inspector.get_table_names():
+        return
+
+    columns = {column["name"]: column for column in inspector.get_columns("discovery_sessions")}
+    required_columns = {
+        "query",
+        "confidence_score",
+        "molecules_generated",
+        "molecules_passed_filter",
+        "failure_reason",
+    }
+    target_column = columns.get("target_id")
+    target_is_required = bool(target_column and not target_column.get("nullable", True))
+    if required_columns.issubset(columns) and not target_is_required:
+        return
+
+    with engine.begin() as connection:
+        connection.execute(text("DROP TABLE IF EXISTS discovery_reports"))
+        connection.execute(text("DROP TABLE IF EXISTS discovery_sessions"))
 
     from app import models  # noqa: F401
 

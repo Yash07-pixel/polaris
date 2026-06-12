@@ -14,6 +14,8 @@ class Settings(BaseSettings):
     APP_VERSION: str = "0.1.0"
     ENVIRONMENT: str = "development"
     DATABASE_URL: str = Field(default="sqlite:///./molgenix.db")
+    GEMINI_API_KEY: str | None = None
+    GEMINI_MODEL: str = "gemini-1.5-flash"
 
     model_config = SettingsConfigDict(
         env_file=".env",

@@ -9,6 +9,7 @@ from app.config import get_settings
 from app.database import SessionLocal, init_db
 from app.mock_data.validation import validate_mock_data
 from app.routers.health import router as health_router
+from app.routers.sessions import router as sessions_router
 from app.seed import seed_database
 
 
@@ -34,6 +35,7 @@ def create_app() -> FastAPI:
         lifespan=lifespan,
     )
     app.include_router(health_router)
+    app.include_router(sessions_router)
     return app
 
 
