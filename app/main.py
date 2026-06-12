@@ -12,6 +12,7 @@ from app.database import SessionLocal, init_db
 from app.mock_data.validation import validate_mock_data
 from app.routers.health import router as health_router
 from app.routers.molecules import router as molecules_router
+from app.routers.reports import router as reports_router
 from app.routers.sessions import router as sessions_router
 from app.seed import seed_database
 from app.utils.molecule_image import pregenerate_molecule_images
@@ -44,6 +45,7 @@ def create_app() -> FastAPI:
     app.include_router(health_router)
     app.include_router(sessions_router)
     app.include_router(molecules_router)
+    app.include_router(reports_router)
     return app
 
 

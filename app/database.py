@@ -41,6 +41,7 @@ def init_db() -> None:
     Base.metadata.create_all(bind=engine)
     _refresh_session_tables_if_needed()
     _add_missing_molecule_columns()
+    _add_missing_report_columns()
 
 
 def _refresh_session_tables_if_needed() -> None:
@@ -91,3 +92,21 @@ def _add_missing_molecule_columns() -> None:
 
     with engine.begin() as connection:
         connection.execute(text("ALTER TABLE molecules ADD COLUMN image_path VARCHAR(500)"))
+
+
+def _add_missing_report_columns() -> None:
+    """Add additive prototype report columns to existing SQLite databases."""
+
+    if not settings.DATABASE_URL.startswith("sqlite"):
+        return
+
+    inspector = inspect(engine)
+    if "discovery_reports" not in inspector.get_table_names():
+        return
+
+    columns = {column["name"] for column in inspector.get_columns("discovery_reports")}
+    with engine.begin() as connection:
+        if "pdf_path" not in columns:
+            connection.execute(text("ALTER TABLE discovery_reports ADD COLUMN pdf_path VARCHAR(500)"))
+        if "druggability_score" not in columns:
+            connection.execute(text("ALTER TABLE discovery_reports ADD COLUMN druggability_score FLOAT"))
