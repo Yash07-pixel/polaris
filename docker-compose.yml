@@ -7,9 +7,7 @@ services:
       DATABASE_URL: "sqlite:////app/data/molgenix.db"
       ENVIRONMENT: "demo"
     volumes:
-      - molgenix_static:/app/static
       - molgenix_data:/app/data
 
 volumes:
-  molgenix_static:
   molgenix_data:
