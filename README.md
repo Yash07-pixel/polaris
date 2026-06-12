@@ -12,17 +12,6 @@ MolGenix is a polished MVP/demo platform that turns plain-English biomedical que
 ![Gemini API](https://img.shields.io/badge/Gemini-AI-orange)
 ![License](https://img.shields.io/badge/License-MIT-lightgrey)
 
----
-
-## Demo Preview
-
-![Hero UI](./docs/screenshots/hero.png)
-
-![Molecule Card](./docs/screenshots/molecule-card.png)
-
-![PDF Report](./docs/screenshots/pdf-report.png)
-
----
 
 ## Features
 
