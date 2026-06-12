@@ -1,0 +1,587 @@
+.query-panel,
+.processing,
+.target-card,
+.report-panel,
+.molecule-card,
+.molecule-modal {
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: linear-gradient(180deg, rgba(16, 41, 63, 0.94), rgba(9, 27, 45, 0.88));
+  box-shadow: var(--shadow);
+}
+
+.query-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 22px;
+  min-height: 430px;
+}
+
+.query-panel label,
+.controls label {
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.query-panel textarea {
+  width: 100%;
+  min-height: 150px;
+  resize: vertical;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  padding: 14px;
+  color: var(--text);
+  background: rgba(2, 12, 22, 0.55);
+  outline: none;
+  line-height: 1.5;
+  transition: border-color 180ms ease, box-shadow 180ms ease;
+}
+
+.query-panel textarea:focus {
+  border-color: var(--teal);
+  box-shadow: 0 0 0 3px rgba(40, 219, 196, 0.14);
+}
+
+.demo-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.demo-pills button,
+.secondary-action,
+.download-action {
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  padding: 9px 11px;
+  color: var(--text);
+  background: rgba(255, 255, 255, 0.04);
+  cursor: pointer;
+  transition: transform 180ms ease, border-color 180ms ease, background 180ms ease;
+}
+
+.demo-pills button:hover,
+.secondary-action:hover,
+.download-action:hover {
+  transform: translateY(-1px);
+  border-color: var(--teal);
+  background: rgba(40, 219, 196, 0.1);
+}
+
+.primary-action {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin-top: auto;
+  min-height: 52px;
+  border: 0;
+  border-radius: var(--radius-sm);
+  color: #03131b;
+  background: linear-gradient(135deg, var(--teal), var(--teal-2));
+  cursor: pointer;
+  font-weight: 800;
+  box-shadow: 0 16px 40px rgba(40, 219, 196, 0.22);
+  transition: transform 180ms ease, filter 180ms ease;
+}
+
+.primary-action:hover {
+  transform: translateY(-2px);
+  filter: brightness(1.05);
+}
+
+.primary-action:disabled {
+  cursor: wait;
+  filter: grayscale(0.2) brightness(0.75);
+}
+
+.button-orbit {
+  width: 13px;
+  height: 13px;
+  border: 2px solid rgba(3, 19, 27, 0.35);
+  border-top-color: #03131b;
+  border-radius: 50%;
+}
+
+.primary-action.is-loading .button-orbit {
+  animation: spin 800ms linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.processing {
+  display: grid;
+  grid-template-columns: 100px 1fr;
+  gap: 22px;
+  align-items: center;
+  padding: 24px;
+  margin-top: 26px;
+}
+
+.scanner {
+  position: relative;
+  width: 82px;
+  height: 82px;
+  border: 1px solid var(--line-strong);
+  border-radius: 50%;
+  background: rgba(40, 219, 196, 0.08);
+  overflow: hidden;
+}
+
+.scanner::before {
+  content: "";
+  position: absolute;
+  inset: 8px;
+  border-radius: 50%;
+  border: 1px dashed rgba(116, 244, 223, 0.45);
+}
+
+.scanner::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 2px;
+  height: 40px;
+  transform-origin: top;
+  background: var(--teal);
+  animation: scan 1400ms linear infinite;
+}
+
+@keyframes scan {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.loading-steps {
+  display: grid;
+  gap: 8px;
+  margin: 14px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.loading-steps li {
+  position: relative;
+  padding-left: 30px;
+  color: var(--muted);
+}
+
+.loading-steps li::before {
+  content: attr(data-step);
+  position: absolute;
+  left: 0;
+  top: 0;
+  display: grid;
+  place-items: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  color: #03131b;
+  background: var(--teal);
+  font-size: 11px;
+  font-weight: 900;
+}
+
+.target-card {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 22px;
+  padding: 24px;
+}
+
+.target-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 12px 0 18px;
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  min-height: 26px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 4px 9px;
+  color: var(--muted);
+  background: rgba(255, 255, 255, 0.04);
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.badge.safe {
+  color: #032115;
+  border-color: transparent;
+  background: var(--green);
+}
+
+.badge.toxic {
+  color: #2a070c;
+  border-color: transparent;
+  background: var(--red);
+}
+
+.badge.warn {
+  color: #221704;
+  border-color: transparent;
+  background: var(--amber);
+}
+
+.confidence {
+  max-width: 520px;
+}
+
+.confidence-row,
+.stat-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.confidence-track {
+  height: 10px;
+  margin-top: 8px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.08);
+  overflow: hidden;
+}
+
+.confidence-fill {
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, var(--teal), var(--violet));
+  transition: width 700ms ease;
+}
+
+.target-stats {
+  display: grid;
+  gap: 10px;
+  min-width: 210px;
+}
+
+.stat-tile {
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  padding: 12px;
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.stat-tile strong {
+  display: block;
+  margin-top: 4px;
+  font-size: 24px;
+}
+
+.controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+}
+
+.controls select {
+  min-height: 38px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  margin-left: 7px;
+  padding: 6px 10px;
+  color: var(--text);
+  background: var(--panel-strong);
+}
+
+.toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 38px;
+}
+
+.toggle input {
+  accent-color: var(--teal);
+}
+
+.molecule-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.molecule-card {
+  display: flex;
+  flex-direction: column;
+  min-height: 430px;
+  padding: 14px;
+  cursor: pointer;
+  transition: transform 180ms ease, border-color 180ms ease, background 180ms ease;
+}
+
+.molecule-card:hover {
+  transform: translateY(-4px);
+  border-color: var(--line-strong);
+  background: linear-gradient(180deg, rgba(18, 49, 72, 0.96), rgba(10, 30, 48, 0.94));
+}
+
+.molecule-image {
+  display: grid;
+  place-items: center;
+  height: 154px;
+  border-radius: var(--radius-sm);
+  background: #f6fbfb;
+  overflow: hidden;
+}
+
+.molecule-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.molecule-card h3 {
+  margin: 14px 0 4px;
+}
+
+.rank-line {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.metric-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin: 14px 0;
+}
+
+.metric {
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  padding: 10px;
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.metric span {
+  display: block;
+  color: var(--muted);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.metric strong {
+  display: block;
+  margin-top: 4px;
+  font-size: 18px;
+}
+
+.admet-dots {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: auto;
+}
+
+.dot {
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.04);
+}
+
+.dot.green {
+  background: var(--green);
+}
+
+.dot.yellow {
+  background: var(--amber);
+}
+
+.dot.red {
+  background: var(--red);
+}
+
+.report-panel {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 18px;
+  align-items: start;
+  padding: 24px;
+}
+
+.report-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.report-preview {
+  grid-column: 1 / -1;
+  border-top: 1px solid var(--line);
+  padding-top: 18px;
+  color: var(--muted);
+  line-height: 1.65;
+}
+
+.download-action {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  background: rgba(0, 6, 12, 0.68);
+  backdrop-filter: blur(8px);
+}
+
+.molecule-modal {
+  width: min(920px, calc(100% - 24px));
+  max-height: min(86vh, 860px);
+  border: 1px solid var(--line-strong);
+  padding: 0;
+  color: var(--text);
+  overflow: auto;
+}
+
+.molecule-modal::backdrop {
+  background: transparent;
+}
+
+.modal-close {
+  position: sticky;
+  top: 10px;
+  float: right;
+  z-index: 2;
+  width: 34px;
+  height: 34px;
+  margin: 10px;
+  border: 1px solid var(--line);
+  border-radius: 50%;
+  color: var(--text);
+  background: rgba(3, 13, 22, 0.84);
+  cursor: pointer;
+}
+
+.modal-body {
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  gap: 22px;
+  padding: 26px;
+}
+
+.modal-body img {
+  width: 100%;
+  border-radius: var(--radius-sm);
+  background: #f7fbfb;
+}
+
+.property-table,
+.admet-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 12px;
+  font-size: 14px;
+}
+
+.property-table td,
+.admet-table td,
+.admet-table th {
+  border-bottom: 1px solid var(--line);
+  padding: 9px 6px;
+  text-align: left;
+}
+
+.property-table td:first-child,
+.admet-table th {
+  color: var(--muted);
+}
+
+.smiles-box {
+  display: flex;
+  gap: 8px;
+  align-items: stretch;
+  margin-top: 14px;
+}
+
+.smiles-box code {
+  flex: 1;
+  min-width: 0;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  padding: 10px;
+  color: var(--teal-2);
+  background: rgba(0, 0, 0, 0.2);
+  overflow-wrap: anywhere;
+}
+
+.copy-button {
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  color: var(--text);
+  background: rgba(255, 255, 255, 0.05);
+  cursor: pointer;
+}
+
+.toast {
+  position: fixed;
+  right: 18px;
+  bottom: 18px;
+  z-index: 80;
+  max-width: 360px;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-sm);
+  padding: 12px 14px;
+  color: var(--text);
+  background: rgba(10, 29, 45, 0.96);
+  box-shadow: var(--shadow);
+}
+
+@media (max-width: 1080px) {
+  .molecule-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 780px) {
+  .processing,
+  .target-card,
+  .report-panel,
+  .modal-body {
+    grid-template-columns: 1fr;
+  }
+
+  .molecule-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .report-actions {
+    flex-wrap: wrap;
+  }
+}
+
+@media (max-width: 520px) {
+  .molecule-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .query-panel,
+  .processing,
+  .target-card,
+  .report-panel {
+    padding: 16px;
+  }
+}

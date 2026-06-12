@@ -2,6 +2,8 @@
 
 from collections import Counter
 
+from rdkit import Chem
+
 from app.mock_data.molecules import MOCK_MOLECULES
 from app.mock_data.targets import MOCK_TARGETS
 
@@ -33,14 +35,18 @@ def validate_mock_data() -> None:
     if unknown_targets:
         raise ValueError(f"Molecules reference unknown target keys: {sorted(unknown_targets)}.")
 
-    toxic_count = 0
+    toxic_by_target: Counter[str] = Counter()
     for molecule in MOCK_MOLECULES:
         if float(molecule["docking_score"]) >= 0:
             raise ValueError(f"{molecule['name']} has a non-negative docking score.")
-        if not str(molecule["smiles"]).strip():
+        smiles = str(molecule["smiles"]).strip()
+        if not smiles:
             raise ValueError(f"{molecule['name']} is missing a SMILES string.")
+        if Chem.MolFromSmiles(smiles) is None:
+            raise ValueError(f"{molecule['name']} has invalid SMILES: {smiles}.")
         if bool(molecule["is_toxic"]):
-            toxic_count += 1
+            toxic_by_target[str(molecule["target_key"])] += 1
 
-    if toxic_count == 0:
-        raise ValueError("At least one intentionally toxic mock molecule is required.")
+    missing_toxic_targets = [target_key for target_key in target_keys if toxic_by_target[target_key] < 1]
+    if missing_toxic_targets:
+        raise ValueError(f"At least one toxic molecule is required per target: {missing_toxic_targets}.")

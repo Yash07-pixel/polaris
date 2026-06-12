@@ -1,0 +1,15 @@
+services:
+  molgenix:
+    build: .
+    ports:
+      - "8000:8000"
+    environment:
+      DATABASE_URL: "sqlite:////app/data/molgenix.db"
+      ENVIRONMENT: "demo"
+    volumes:
+      - molgenix_static:/app/static
+      - molgenix_data:/app/data
+
+volumes:
+  molgenix_static:
+  molgenix_data:
