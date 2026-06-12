@@ -4,6 +4,14 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>MolGenix</title>
+    <link rel="icon" href="static/brand/favicon.svg" type="image/svg+xml" />
+    <script>
+      (function () {
+        const savedTheme = localStorage.getItem("molgenix-theme");
+        const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+        document.documentElement.dataset.theme = savedTheme || (prefersDark ? "dark" : "light");
+      })();
+    </script>
     <link rel="stylesheet" href="styles/main.css" />
     <link rel="stylesheet" href="styles/components.css" />
   </head>
@@ -12,18 +20,27 @@
       <header class="topbar">
         <a class="brand" href="#hero" aria-label="MolGenix home">
           <span class="brand-mark">
-            <img src="static/brand/molgenix-logo.png" alt="" />
+            <img class="brand-icon brand-icon-light" src="static/brand/molgenix-icon-light.svg" alt="" />
+            <img class="brand-icon brand-icon-dark" src="static/brand/molgenix-icon-dark.svg" alt="" />
           </span>
           <span>
             <strong>MolGenix</strong>
             <small>AI drug discovery prototype</small>
           </span>
         </a>
-        <nav class="topnav" aria-label="Primary">
-          <a href="#target-section">Target</a>
-          <a href="#molecules-section">Molecules</a>
-          <a href="#report-section">Report</a>
-        </nav>
+        <div class="topbar-actions">
+          <nav class="topnav" aria-label="Primary">
+            <a href="#target-section">Target</a>
+            <a href="#molecules-section">Molecules</a>
+            <a href="#report-section">Report</a>
+          </nav>
+          <button id="theme-toggle" class="theme-toggle" type="button" aria-label="Toggle color theme" aria-pressed="false">
+            <span class="theme-toggle-track" aria-hidden="true">
+              <span class="theme-toggle-thumb"></span>
+            </span>
+            <span id="theme-toggle-label">Dark</span>
+          </button>
+        </div>
       </header>
 
       <main>
@@ -48,7 +65,7 @@
             </div>
             <button id="run-button" class="primary-action" type="submit">
               <span class="button-orbit" aria-hidden="true"></span>
-              Run discovery
+              <span class="button-label">Run discovery</span>
             </button>
           </form>
         </section>

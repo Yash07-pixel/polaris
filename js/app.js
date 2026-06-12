@@ -19,12 +19,32 @@
     reportButton: document.getElementById("generate-report-button"),
     modalClose: document.getElementById("modal-close"),
     modalBackdrop: document.getElementById("modal-backdrop"),
+    themeToggle: document.getElementById("theme-toggle"),
+    themeToggleLabel: document.getElementById("theme-toggle-label"),
+    runButtonLabel: document.querySelector("#run-button .button-label"),
   };
 
   function setLoading(isLoading) {
     elements.runButton.disabled = isLoading;
     elements.runButton.classList.toggle("is-loading", isLoading);
-    elements.runButton.lastChild.textContent = isLoading ? " Analyzing" : " Run discovery";
+    elements.runButtonLabel.textContent = isLoading ? "Analyzing" : "Run discovery";
+  }
+
+  function applyTheme(theme) {
+    document.documentElement.dataset.theme = theme;
+    localStorage.setItem("molgenix-theme", theme);
+    const isDark = theme === "dark";
+    elements.themeToggle.setAttribute("aria-pressed", String(isDark));
+    elements.themeToggleLabel.textContent = isDark ? "Dark" : "Light";
+  }
+
+  function initializeTheme() {
+    const currentTheme = document.documentElement.dataset.theme || "dark";
+    applyTheme(currentTheme);
+    elements.themeToggle.addEventListener("click", () => {
+      const nextTheme = document.documentElement.dataset.theme === "dark" ? "light" : "dark";
+      applyTheme(nextTheme);
+    });
   }
 
   async function runWorkflow(query) {
@@ -126,6 +146,7 @@
   elements.reportButton.addEventListener("click", generateReport);
   elements.modalClose.addEventListener("click", MolGenixUI.closeModal);
   elements.modalBackdrop.addEventListener("click", MolGenixUI.closeModal);
+  initializeTheme();
 
   document.addEventListener("keydown", (event) => {
     if (event.key === "Escape") {
