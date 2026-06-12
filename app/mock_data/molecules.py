@@ -740,7 +740,7 @@ MOCK_MOLECULES: list[dict[str, str | int | float | bool]] = [
     {
         "target_key": "hiv_integrase",
         "name": "MGX-HIVI-001",
-        "smiles": "CCOC(=O)c1c(O)c(C(=O)N2CCOCC2)n(C)c2cc(F)ccc12",
+        "smiles": "CCOC(=O)C(C(=O)N1CCOCC1)=C(O)c1ccc(F)cc1",
         "molecular_weight": 376.4,
         "logp": 2.1,
         "h_bond_donors": 1,
@@ -763,7 +763,7 @@ MOCK_MOLECULES: list[dict[str, str | int | float | bool]] = [
     {
         "target_key": "hiv_integrase",
         "name": "MGX-HIVI-002",
-        "smiles": "O=C(O)c1c(O)c(C(=O)Nc2ccc(F)cc2)n(C)c2ccccc12",
+        "smiles": "O=C(O)C(C(=O)Nc1ccc(F)cc1)=C(O)c1ccccc1",
         "molecular_weight": 352.3,
         "logp": 2.8,
         "h_bond_donors": 3,
@@ -786,7 +786,7 @@ MOCK_MOLECULES: list[dict[str, str | int | float | bool]] = [
     {
         "target_key": "hiv_integrase",
         "name": "MGX-HIVI-003",
-        "smiles": "COc1ccc(NC(=O)c2c(O)c(C(=O)O)n(C)c3ccccc23)cc1F",
+        "smiles": "COc1ccc(NC(=O)C(C(=O)O)=C(O)c2ccccc2)c(F)c1",
         "molecular_weight": 382.3,
         "logp": 2.6,
         "h_bond_donors": 3,
@@ -809,7 +809,7 @@ MOCK_MOLECULES: list[dict[str, str | int | float | bool]] = [
     {
         "target_key": "hiv_integrase",
         "name": "MGX-HIVI-004",
-        "smiles": "CCN(CC)CCOc1ccc(NC(=O)c2c(O)c(C(=O)O)n(C)c3ccccc23)cc1",
+        "smiles": "CCN(CC)CCOc1ccc(NC(=O)C(C(=O)O)=C(O)c2ccccc2)cc1",
         "molecular_weight": 451.5,
         "logp": 3.7,
         "h_bond_donors": 3,
@@ -832,7 +832,7 @@ MOCK_MOLECULES: list[dict[str, str | int | float | bool]] = [
     {
         "target_key": "hiv_integrase",
         "name": "MGX-HIVI-005",
-        "smiles": "O=C(O)c1c(O)c(C(=O)N2CCN(C3CC3)CC2)n(C)c2cc(F)ccc12",
+        "smiles": "O=C(O)C(C(=O)N1CCN(C2CC2)CC1)=C(O)c1ccc(F)cc1",
         "molecular_weight": 399.4,
         "logp": 1.9,
         "h_bond_donors": 2,
@@ -855,7 +855,7 @@ MOCK_MOLECULES: list[dict[str, str | int | float | bool]] = [
     {
         "target_key": "hiv_integrase",
         "name": "MGX-HIVI-006",
-        "smiles": "COC(=O)c1c(O)c(C(=O)Nc2ccc(C#N)cc2)n(C)c2ccccc12",
+        "smiles": "COC(=O)C(C(=O)Nc1ccc(C#N)cc1)=C(O)c1ccccc1",
         "molecular_weight": 361.4,
         "logp": 2.9,
         "h_bond_donors": 2,
@@ -878,7 +878,7 @@ MOCK_MOLECULES: list[dict[str, str | int | float | bool]] = [
     {
         "target_key": "hiv_integrase",
         "name": "MGX-HIVI-007",
-        "smiles": "O=C(O)c1c(O)c(C(=O)NCCO)n(C)c2cc(Cl)ccc12",
+        "smiles": "O=C(O)C(C(=O)NCCO)=C(O)c1ccc(Cl)cc1",
         "molecular_weight": 322.7,
         "logp": 1.6,
         "h_bond_donors": 4,
@@ -901,7 +901,7 @@ MOCK_MOLECULES: list[dict[str, str | int | float | bool]] = [
     {
         "target_key": "hiv_integrase",
         "name": "MGX-HIVI-008",
-        "smiles": "O=N(=O)c1ccc(NC(=O)c2c(O)c(C(=O)O)n(C)c3ccccc23)cc1",
+        "smiles": "O=N(=O)c1ccc(NC(=O)C(C(=O)O)=C(O)c2ccccc2)cc1",
         "molecular_weight": 393.3,
         "logp": 2.7,
         "h_bond_donors": 3,

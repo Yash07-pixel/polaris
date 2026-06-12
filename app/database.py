@@ -40,6 +40,7 @@ def init_db() -> None:
 
     Base.metadata.create_all(bind=engine)
     _refresh_session_tables_if_needed()
+    _add_missing_molecule_columns()
 
 
 def _refresh_session_tables_if_needed() -> None:
@@ -72,3 +73,21 @@ def _refresh_session_tables_if_needed() -> None:
     from app import models  # noqa: F401
 
     Base.metadata.create_all(bind=engine)
+
+
+def _add_missing_molecule_columns() -> None:
+    """Add additive prototype molecule columns to existing SQLite databases."""
+
+    if not settings.DATABASE_URL.startswith("sqlite"):
+        return
+
+    inspector = inspect(engine)
+    if "molecules" not in inspector.get_table_names():
+        return
+
+    columns = {column["name"] for column in inspector.get_columns("molecules")}
+    if "image_path" in columns:
+        return
+
+    with engine.begin() as connection:
+        connection.execute(text("ALTER TABLE molecules ADD COLUMN image_path VARCHAR(500)"))

@@ -34,6 +34,7 @@ class Molecule(Base):
     docking_score: Mapped[float] = mapped_column(Float, nullable=False)
     synthetic_accessibility: Mapped[float] = mapped_column(Float, nullable=False)
     is_toxic: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
+    image_path: Mapped[str | None] = mapped_column(String(500), nullable=True)
     notes: Mapped[str] = mapped_column(Text, nullable=False)
     created_at: Mapped[datetime] = mapped_column(DateTime, server_default=func.now(), nullable=False)
 
