@@ -1,0 +1,49 @@
+"""Database seeding for the MolGenix prototype."""
+
+from sqlalchemy import func, select
+from sqlalchemy.orm import Session
+
+from app.mock_data.molecules import MOCK_MOLECULES
+from app.mock_data.targets import MOCK_TARGETS
+from app.mock_data.validation import validate_mock_data
+from app.models import DrugTarget, Molecule
+
+
+def _table_count(db: Session, model: type[DrugTarget] | type[Molecule]) -> int:
+    """Return the row count for a SQLAlchemy model."""
+
+    return int(db.scalar(select(func.count()).select_from(model)) or 0)
+
+
+def seed_database(db: Session) -> None:
+    """Seed mock targets and molecules when the prototype database is empty."""
+
+    validate_mock_data()
+
+    target_count = _table_count(db, DrugTarget)
+    molecule_count = _table_count(db, Molecule)
+    if target_count > 0 or molecule_count > 0:
+        return
+
+    targets_by_key: dict[str, DrugTarget] = {}
+    for target_data in MOCK_TARGETS:
+        target = DrugTarget(
+            name=target_data["name"],
+            gene_symbol=target_data["gene_symbol"],
+            uniprot_id=target_data["uniprot_id"],
+            disease_area=target_data["disease_area"],
+            mechanism=target_data["mechanism"],
+            description=target_data["description"],
+        )
+        targets_by_key[target_data["key"]] = target
+        db.add(target)
+
+    db.flush()
+
+    for molecule_data in MOCK_MOLECULES:
+        data = dict(molecule_data)
+        target_key = str(data.pop("target_key"))
+        molecule = Molecule(target_id=targets_by_key[target_key].id, **data)
+        db.add(molecule)
+
+    db.commit()

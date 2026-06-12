@@ -1,0 +1,1 @@
+"""MolGenix backend prototype package."""
